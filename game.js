@@ -1,4 +1,4 @@
- const RAD = Math.PI/180;
+//  const RAD = Math.PI/180; 
  const scrn = document.getElementById('canvas');
  const sctx = scrn.getContext("2d");
  scrn.tabIndex = 1;
@@ -23,7 +23,7 @@
  })
 
  scrn.onkeydown = function keyDown(e) {
- 	if (e.keyCode == 32 || e.keyCode == 87 || e.keyCode == 38)   // Space Key or W key or arrow up
+ 	if (e.keyCode == 32 || e.keyCode == 87 || e.keyCode == 38)   // Space Key, mouse click
  	{
  		switch (state.curr) {
 	        case state.getReady :
@@ -138,7 +138,7 @@
         let w = this.animations[this.frame].sprite.width;
         sctx.save();
         sctx.translate(this.x,this.y);
-        sctx.rotate(this.rotatation*RAD);
+        // sctx.rotate(this.rotatation*RAD);
         sctx.drawImage(this.animations[this.frame].sprite,-w/2,-h/2);
         sctx.restore();
     },
@@ -147,7 +147,7 @@
         switch (state.curr) {
             case state.getReady :
                 this.rotatation = 0;
-                this.y +=(frames%10==0) ? Math.sin(frames*RAD) :0;
+                // this.y +=(frames%10==0) ? Math.sin(frames*RAD) :0;
                 this.frame += (frames%10==0) ? 1 : 0;
                 break;
             case state.Play :
