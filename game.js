@@ -1,29 +1,31 @@
-//  const RAD = Math.PI/180; 
- const scrn = document.getElementById('canvas');
+ const RAD = Math.PI/180; // bird 회전을 위한 선언
+
+ const scrn = document.getElementById('canvas'); //canvas 사용을 위한 선언
  const sctx = scrn.getContext("2d");
- scrn.tabIndex = 1;
- scrn.addEventListener("click",()=>{
+
+ scrn.addEventListener("click",()=>{    //mouse click을 위한 선언
     switch (state.curr) {
-        case state.getReady :
+        case state.getReady :   //getReady에서 클릭 시 게임 시작
             state.curr = state.Play;
-            SFX.start.play();
+            SFX.start.play();   //start 소리 재생
             break;
-        case state.Play :
-            bird.flap();
+        case state.Play :   //게임 중
+            bird.wing();  //시작 시 bird의 소리 재생
             break;
-        case state.gameOver :
+        case state.gameOver :   // 게임 종료 시 getReady로 돌아감
             state.curr = state.getReady;
             bird.speed = 0;
             bird.y = 100;
             pipe.pipes=[];
             UI.score.curr = 0;
-            SFX.played=false;
+            SFX.played=false; //die 소리 재생
             break;
     }
  })
 
+ scrn.tabIndex = 1; //keyboard 사용을 위한 선언
  scrn.onkeydown = function keyDown(e) {
- 	if (e.keyCode == 32 || e.keyCode == 87 || e.keyCode == 38)   // Space Key, mouse click
+ 	if (e.keyCode == 32 || e.keyCode == 87 || e.keyCode == 38)
  	{
  		switch (state.curr) {
 	        case state.getReady :
@@ -31,7 +33,7 @@
 	            SFX.start.play();
 	            break;
 	        case state.Play :
-	            bird.flap();
+	            bird.wing();
 	            break;
 	        case state.gameOver :
 	            state.curr = state.getReady;
@@ -56,7 +58,7 @@
  }
  const SFX = {
      start : new Audio(),
-     flap : new Audio(),
+     wing : new Audio(),
      score : new Audio(),
      hit : new Audio(),
      die : new Audio(),
@@ -65,7 +67,7 @@
  const gnd = {
     sprite : new Image(),
      x : 0,
-     y :0,
+     y : 0,
      draw : function() {
         this.y = parseFloat(scrn.height-this.sprite.height);
         sctx.drawImage(this.sprite,this.x,this.y);
@@ -138,7 +140,7 @@
         let w = this.animations[this.frame].sprite.width;
         sctx.save();
         sctx.translate(this.x,this.y);
-        // sctx.rotate(this.rotatation*RAD);
+        sctx.rotate(this.rotatation*RAD);
         sctx.drawImage(this.animations[this.frame].sprite,-w/2,-h/2);
         sctx.restore();
     },
@@ -147,7 +149,7 @@
         switch (state.curr) {
             case state.getReady :
                 this.rotatation = 0;
-                // this.y +=(frames%10==0) ? Math.sin(frames*RAD) :0;
+                this.y +=(frames%10==0) ? Math.sin(frames*RAD) :0;
                 this.frame += (frames%10==0) ? 1 : 0;
                 break;
             case state.Play :
@@ -182,10 +184,10 @@
         }
         this.frame = this.frame%this.animations.length;       
     },
-    flap : function(){
+    wing : function(){
         if(this.y > 0)
         {
-            SFX.flap.play();
+            SFX.wing.play();
             this.speed = -this.thrust;
         }
     },
@@ -225,9 +227,6 @@
                 SFX.score.play();
                 pipe.moved = false;
             }
-
-            
-                
         }
     }
  };
@@ -305,8 +304,8 @@
 
  };
 
-gnd.sprite.src="img/ground.png";
-bg.sprite.src="img/BG.png";
+gnd.sprite.src="img/ground/base.png";
+bg.sprite.src="img/BGDay.png";
 pipe.top.sprite.src="img/toppipe.png";
 pipe.bot.sprite.src="img/botpipe.png";
 UI.gameOver.sprite.src="img/go.png";
@@ -318,7 +317,7 @@ bird.animations[1].sprite.src="img/bird/b1.png";
 bird.animations[2].sprite.src="img/bird/b2.png";
 bird.animations[3].sprite.src="img/bird/b0.png";
 SFX.start.src = "sfx/start.wav"
-SFX.flap.src = "sfx/flap.wav"
+SFX.wing.src = "sfx/wing.wav"
 SFX.score.src = "sfx/score.wav"
 SFX.hit.src = "sfx/hit.wav"
 SFX.die.src = "sfx/die.wav"
@@ -332,7 +331,6 @@ gameLoop();
      frames++;
      requestAnimationFrame(gameLoop);
  }
-
  function update()
  {
   bird.update();  
