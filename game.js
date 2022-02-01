@@ -302,7 +302,7 @@ const UI = {
     }
 };
 
-gnd.sprite.src="img/ground/base.png";
+gnd.sprite.src="img/ground.png";
 bg.sprite.src="img/BGDay.png";
 pipe.top.sprite.src="img/toppipe.png";
 pipe.bot.sprite.src="img/botpipe.png";
