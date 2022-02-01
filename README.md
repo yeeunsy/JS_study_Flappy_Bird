@@ -7,3 +7,6 @@
 
 사용한 언어와 개발환경
 ---
+- Javascript
+- HTML Canvas
+
