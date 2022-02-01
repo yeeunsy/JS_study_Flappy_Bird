@@ -1,9 +1,9 @@
  const RAD = Math.PI/180; // bird 회전을 위한 선언
 
- const scrn = document.getElementById('canvas'); //canvas 사용을 위한 선언
- const sctx = scrn.getContext("2d");
+ const scrn = document.getElementById('canvas'); //canvas 찾는 메소드
+ const sctx = scrn.getContext("2d"); // 렌더링을 위한 메소드
 
- scrn.addEventListener("click",()=>{    //mouse click을 위한 선언
+scrn.addEventListener("click",()=>{    //mouse click을 위한 선언
     switch (state.curr) {
         case state.getReady :   //getReady에서 클릭 시 게임 시작
             state.curr = state.Play;
@@ -21,15 +21,15 @@
             SFX.played=false; //die 소리 재생
             break;
     }
- })
+})
 
- scrn.tabIndex = 1; //keyboard 사용을 위한 선언
- scrn.onkeydown = function keyDown(e) {
- 	if (e.keyCode == 32 || e.keyCode == 87 || e.keyCode == 38)
+scrn.tabIndex = 1; //keyboard 사용을 위한 선언
+scrn.onkeydown = function keyDown(e) {
+ 	if (e.keyCode == 32) //현재 keycode value 32
  	{
  		switch (state.curr) {
-	        case state.getReady :
-	            state.curr = state.Play;
+	        case state.getReady : 
+	            state.curr = state.Play; 
 	            SFX.start.play();
 	            break;
 	        case state.Play :
@@ -47,38 +47,40 @@
  	}
 }
 
- let frames = 0;
- let dx = 2;
- const state = {
-     curr : 0,
-     getReady : 0,
-     Play : 1,
-     gameOver : 2,
+let frames = 0;
+let dx = 2;
+const state = { //게임 진행 상태
+    curr : 0,
+    getReady : 0,
+    Play : 1,
+    gameOver : 2,
+}
 
- }
- const SFX = {
-     start : new Audio(),
-     wing : new Audio(),
-     score : new Audio(),
-     hit : new Audio(),
-     die : new Audio(),
-     played : false
- }
- const gnd = {
+const SFX = {
+    start : new Audio(),
+    wing : new Audio(),
+    score : new Audio(),
+    hit : new Audio(),
+    die : new Audio(),
+    played : false
+}
+
+const gnd = {
     sprite : new Image(),
-     x : 0,
-     y : 0,
-     draw : function() {
+    x : 0,
+    y : 0,
+    draw : function() {
         this.y = parseFloat(scrn.height-this.sprite.height);
         sctx.drawImage(this.sprite,this.x,this.y);
-     },
-     update : function() {
+    },
+    update : function() {
         if(state.curr != state.Play) return;
         this.x -= dx;
         this.x = this.x % (this.sprite.width/2);    
     }
- };
- const bg = {
+};
+
+const bg = {
     sprite : new Image(),
     x : 0,
     y :0,
@@ -86,41 +88,41 @@
         y = parseFloat(scrn.height-this.sprite.height);
         sctx.drawImage(this.sprite,this.x,y);
     }
- };
- const pipe = {
-     top : {sprite : new Image()},
-     bot : {sprite : new Image()},
-     gap:85,
-     moved: true,
-     pipes : [],
-     draw : function(){
+};
+
+const pipe = {
+    top : {sprite : new Image()},
+    bot : {sprite : new Image()},
+    gap:85,
+    moved: true,
+    pipes : [],
+    draw : function(){
         for(let i = 0;i<this.pipes.length;i++)
         {
             let p = this.pipes[i];
             sctx.drawImage(this.top.sprite,p.x,p.y)
             sctx.drawImage(this.bot.sprite,p.x,p.y+parseFloat(this.top.sprite.height)+this.gap)
         }
-     },
-     update : function(){
-         if(state.curr!=state.Play) return;
-         if(frames%100==0)
-         {
-             this.pipes.push({x:parseFloat(scrn.width),y:-210*Math.min(Math.random()+1,1.8)});
-         }
-         this.pipes.forEach(pipe=>{
-             pipe.x -= dx;
-         })
+    },
+    update : function(){
+        if(state.curr!=state.Play) return;
+        if(frames%100==0)
+        {
+            this.pipes.push({x:parseFloat(scrn.width),y:-210*Math.min(Math.random()+1,1.8)});
+        }
+        this.pipes.forEach(pipe=>{
+            pipe.x -= dx;
+        })
 
-         if(this.pipes.length&&this.pipes[0].x < -this.top.sprite.width)
-         {
+        if(this.pipes.length&&this.pipes[0].x < -this.top.sprite.width)
+        {
             this.pipes.shift();
             this.moved = true;
-         }
+        }
+    }
+};
 
-     }
-
- };
- const bird = {
+const bird = {
     animations :
         [
             {sprite : new Image()},
@@ -132,7 +134,7 @@
     x : 50,
     y :100,
     speed : 0,
-    gravity : .125,
+    gravity : 0.125,
     thrust : 3.6,
     frame:0,
     draw : function() {
@@ -161,7 +163,6 @@
                 {
                     state.curr = state.gameOver;
                 }
-                
                 break;
             case state.gameOver : 
                 this.frame = 1;
@@ -174,12 +175,11 @@
                 this.speed = 0;
                 this.y=gnd.y-r;
                 this.rotatation=90;
-                if(!SFX.played) {
+                    if(!SFX.played) {
                     SFX.die.play();
                     SFX.played = true;
+                    }
                 }
-                }
-                
                 break;
         }
         this.frame = this.frame%this.animations.length;       
@@ -194,7 +194,6 @@
     setRotation : function(){
         if(this.speed <= 0)
         {
-            
             this.rotatation = Math.max(-25, -25 * this.speed/(-1*this.thrust));
         }
         else if(this.speed > 0 ) {
@@ -219,7 +218,6 @@
                     SFX.hit.play();
                     return true;
                 }
-
             }
             else if(pipe.moved)
             {
@@ -229,8 +227,9 @@
             }
         }
     }
- };
- const UI = {
+};
+
+const UI = {
     getReady : {sprite : new Image()},
     gameOver : {sprite : new Image()},
     tap : [{sprite : new Image()},
@@ -277,7 +276,7 @@
                 break;
             case state.gameOver :
                     sctx.lineWidth = "2";
-                    sctx.font = "40px Squada One";
+                    sctx.font = "35px Squada One";
                     let sc = `SCORE :     ${this.score.curr}`;
                     try {
                         this.score.best = Math.max(this.score.curr,localStorage.getItem("best"));
@@ -301,8 +300,7 @@
         this.frame += (frames % 10==0) ? 1 :0;
         this.frame = this.frame % this.tap.length;
     }
-
- };
+};
 
 gnd.sprite.src="img/ground/base.png";
 bg.sprite.src="img/BGDay.png";
@@ -324,28 +322,25 @@ SFX.die.src = "sfx/die.wav"
 
 gameLoop();
 
- function gameLoop()
- { 
-     update();
-     draw();
-     frames++;
-     requestAnimationFrame(gameLoop);
- }
- function update()
- {
-  bird.update();  
-  gnd.update();
-  pipe.update();
-  UI.update();
- }
- function draw()
- {
-    sctx.fillStyle = "#30c0df";
-    sctx.fillRect(0,0,scrn.width,scrn.height)
+function gameLoop()
+{ 
+    update();
+    draw();
+    frames++;
+    requestAnimationFrame(gameLoop);
+}
+function update()
+{
+    bird.update();  
+    gnd.update();
+    pipe.update();
+    UI.update();
+}
+function draw()
+{
     bg.draw();
     pipe.draw();
-    
     bird.draw();
     gnd.draw();
     UI.draw();
- }
+}
