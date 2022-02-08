@@ -56,7 +56,7 @@ const state = { //게임 진행 상태
     gameOver : 2,
 }
 
-const SFX = {
+const SFX = { //사운드 선언
     start : new Audio(),
     wing : new Audio(),
     score : new Audio(),
@@ -65,7 +65,7 @@ const SFX = {
     played : false
 }
 
-const gnd = {
+const gnd = { //게임 배경 출력을 위한 선언
     sprite : new Image(),
     x : 0,
     y : 0,
@@ -74,13 +74,14 @@ const gnd = {
         sctx.drawImage(this.sprite,this.x,this.y);
     },
     update : function() {
-        if(state.curr != state.Play) return;
+        if(state.curr != state.Play) 
+        return;
         this.x -= dx;
-        this.x = this.x % (this.sprite.width/2);    
+        this.x = this.x % (this.sprite.width/2); // base 배경의 출력을 위한 선언
     }
 };
 
-const bg = {
+const bg = { // 게임 내 배경 선언
     sprite : new Image(),
     x : 0,
     y :0,
@@ -90,10 +91,10 @@ const bg = {
     }
 };
 
-const pipe = {
+const pipe = { //파이프 출력을 위한 선언
     top : {sprite : new Image()},
     bot : {sprite : new Image()},
-    gap:85,
+    gap:85, //공백 크기
     moved: true,
     pipes : [],
     draw : function(){
@@ -105,10 +106,12 @@ const pipe = {
         }
     },
     update : function(){
-        if(state.curr!=state.Play) return;
+        if(state.curr!=state.Play)
+        return;
         if(frames%100==0)
         {
             this.pipes.push({x:parseFloat(scrn.width),y:-210*Math.min(Math.random()+1,1.8)});
+            //공백의 위치를 랜덤으로 주기위해 선언(이건 더 공부해야 할 듯 하다.)
         }
         this.pipes.forEach(pipe=>{
             pipe.x -= dx;
